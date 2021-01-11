@@ -1,7 +1,8 @@
 #
-# @(!--#) @(#) fwviasnmp.py, sversion 0.1.0, fversion 008, 06-january-2021
+# @(!--#) @(#) pscpupdate.py, sversion 0.1.0, fversion 002, 11-january-2021
 #
-# get the firmware revision of a Raritan PDU via SNMP v2c
+# generate a fwupdate.bat Windows batch file to upgrade
+# the firmware on multiple Raitan PDUs via the PSCP.EXE command
 #
 
 #
@@ -30,6 +31,38 @@ import select
 #
 # globals
 #
+
+##############################################################################
+
+def expandips(ip):
+    octets = ip.split('.')
+    
+    if len(octets) != 4:
+        return [ip]
+    
+    lastoctet = octets[3]
+    
+    if lastoctet.find('-') == -1:
+        return [ip]
+
+    startend = lastoctet.split('-')
+    
+    if len(startend) != 2:
+        return [ip]
+    
+    try:
+        start = int(startend[0])
+        end = int(startend[1])
+    except ValueError:
+        return [ip]
+
+    iplist = []
+        
+    while start <= end:
+        iplist.append("{}.{}.{}.{}".format(octets[0], octets[1], octets[2], start))
+        start += 1
+
+    return iplist
 
 ##############################################################################
 
@@ -78,13 +111,13 @@ def pscpupdate(hostlist, batchfile, username, firmware, pw):
         if len(words) == 0:
             continue
 
-        outputline = 'pscp -P 22 -pw {} {} {}@{}:/fwupdate'.format(pw, firmware, username, words[0])
-
-        print(outputline)
+        hostnames = expandips(words[0])
         
-        print(outputline, file=batchf)
-        
-        batchf.flush()
+        for hostname in hostnames:
+            outputline = 'pscp -P 22 -pw {} {} {}@{}:/fwupdate'.format(pw, firmware, username, hostname)
+            print(outputline)
+            print(outputline, file=batchf)
+            batchf.flush()
 
     batchf.close()
             
