@@ -16,7 +16,7 @@ You will need:
 
 You can get PSCP.EXE from:
 
-[https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html](Download PuTTY: latest release {0.nn})
+[Download PuTTY: latest release (0.nn)](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html)
 
 
 ## Quick start
@@ -79,6 +79,37 @@ If you are happy to proceed then press any key and the copying will begin.
 Once firmware file has been copied to each PDU wait a number of
 minutes for all the updates to complete and then login to each PDU to
 check the upgrade worked.
+
+## "It prompts 'Store key in cache? (y/n)' for every PDU!"
+
+If the PSCP.EXE command is connecting to a PDU for the first time it will prompt
+with:
+
+```
+Store key in cache? (y/n)
+```
+
+Or more fully with something similar:
+
+```
+The server's host key is not cached in the registry. You
+have no guarantee that the server is the computer you
+think it is.
+The server's ecdsa-sha2-nistp384 key fingerprint is:
+ecdsa-sha2-nistp384 384 13:56:d9:23:8a:32:70:bf:7a:64:4d:9b:c2:87:4f:23
+If you trust this host, enter "y" to add the key to
+PuTTY's cache and carry on connecting.
+If you want to carry on connecting just once, without
+adding the key to the cache, enter "n".
+If you do not trust this host, press Return to abandon the
+connection.
+Store key in cache? (y/n)
+```
+
+Assuming you can trust the host then you will just have to type 'y' and press the return key
+for each PDU. The good news is that if you have to run this again you won't get prompted.
+
+Whatever you do be sure to follow your company security policy on ssh fingerprints.
 
 ## Warnings
 
